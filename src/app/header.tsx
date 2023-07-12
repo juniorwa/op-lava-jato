@@ -26,7 +26,7 @@ const Header: React.FC = () => {
             </Link>
           </nav>
           <div className="flex items-center">
-            <div className="mr-4">John Doe</div>
+            <div className="mr-4">LOGO</div>
           </div>
         </div>
       </div>
