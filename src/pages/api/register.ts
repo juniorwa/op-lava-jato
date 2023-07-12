@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 export type UserInterface = {
   password: string;
   name: string;
+  surname: string;
   email: string;
 };
 
@@ -13,9 +14,9 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     try {
-      const { password, name, email }: UserInterface = req.body;
+      const { password, name, email, surname }: UserInterface = req.body;
 
-      // Checking if password was provided
+      // Checking if data was provided
       if (!password) {
         return res.status(400).json({ error: "Password is required." });
       }
@@ -28,12 +29,16 @@ export default async function handler(
         return res.status(400).json({ error: "Email is required." });
       }
 
+      if (!surname) {
+        return res.status(400).json({ error: "Surname is required." });
+      }
+
       // Encrypting password
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
       // Return encrypted password
-      return res.status(200).json({ hashedPassword });
+      return res.status(200).json({ email, surname, name, hashedPassword });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error." });

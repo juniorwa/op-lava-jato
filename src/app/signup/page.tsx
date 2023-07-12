@@ -17,11 +17,28 @@ const SignUp: NextPage = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    // Handle sign up logic here
-    alert(JSON.stringify(data));
+  const onSubmit = async (data: FormData) => {
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+  
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+  
+      const responseData = await response.json();
+  
+      alert(JSON.stringify(responseData));
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
   };
-
+  
   return (
     <main className="flex min-h-screen items-center justify-center p-10 pt-0">
       <div className="w-full max-w-md bg-gray-900 p-10 rounded-lg">
