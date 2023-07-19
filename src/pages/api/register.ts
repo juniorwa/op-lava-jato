@@ -1,5 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
+import prisma from "@/lib/prismaClient";
 
 export type UserInterface = {
   password: string;
@@ -37,8 +38,17 @@ export default async function handler(
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
+      // Save user in the database
+      const user = await prisma.user.create({
+        data: {
+          email,
+          name,
+          password: hashedPassword,
+        },
+      });
+
       // Return encrypted password
-      return res.status(200).json({ email, surname, name, hashedPassword });
+      return res.status(200).json({ ...user });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error." });
