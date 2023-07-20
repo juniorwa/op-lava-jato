@@ -20,6 +20,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         name: product.name,
         imageUrl: product.images[0],
         price: formattedPrice,
+        default_price: price.id
       };
     });
 

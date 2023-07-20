@@ -20,6 +20,17 @@ type ProductType = {
   id: string;
   name: string;
   price: string;
+  default_price: string;
+};
+
+export type BookingType = {
+  selectedDay: string;
+  selectedTime: string;
+  selectedProductId: string;
+  selectedProductNane: string;
+  selectedProdutPrice: string;
+  selectedProductDefaultPrice: string;
+  step: number;
 };
 
 const BookingPage: NextPage = () => {
@@ -35,9 +46,11 @@ const BookingPage: NextPage = () => {
     selectedProductNane: "",
     selectedProdutPrice: "",
     step: 0,
-  });
+  } as BookingType);
+  console.log(bookingData);
 
   const [dateList, setDateList] = useState<string[]>([]);
+  const [checkoutIsLoading, setIsCheckoutLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const today = new Date();
@@ -56,6 +69,28 @@ const BookingPage: NextPage = () => {
 
     setDateList(newDateList);
   }, []);
+
+  const handleBuyProduct = async (): Promise<void> => {
+    try {
+      setIsCheckoutLoading(true);
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          booking: bookingData,
+        }),
+      });
+
+      const { checkoutUrl } = await response.json();
+      window.location.href = checkoutUrl;
+    } catch (error: any) {
+      setIsCheckoutLoading(false);
+      alert("Error making checkout");
+      console.log(error);
+    }
+  };
 
   if (error)
     return (
@@ -94,6 +129,7 @@ const BookingPage: NextPage = () => {
                         selectedProductId: product.id,
                         selectedProductNane: product.name,
                         selectedProdutPrice: product.price,
+                        selectedProductDefaultPrice: product.default_price,
                       }))
                     }
                   >
@@ -145,6 +181,7 @@ const BookingPage: NextPage = () => {
                 selectedProductId: "",
                 selectedProductNane: "",
                 selectedProdutPrice: "",
+                selectedProductDefaultPrice: "",
                 step: 0,
               }))
             }
@@ -186,11 +223,11 @@ const BookingPage: NextPage = () => {
         {bookingData.step === 2 && (
           <Button
             type="button"
-            isLoading={false}
+            isLoading={checkoutIsLoading}
             disabled={!bookingData.selectedTime}
-            onClick={() => {}}
+            onClick={handleBuyProduct}
           >
-            Continue
+            Book
           </Button>
         )}
       </div>
