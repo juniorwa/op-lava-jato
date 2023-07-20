@@ -1,6 +1,6 @@
 import React from "react";
 
-type LoadingButtonProps = {
+type ButtonProps = {
   type: "submit" | "button" | "reset";
   variant?: "default" | "danger";
   className?: string;
@@ -10,7 +10,7 @@ type LoadingButtonProps = {
   children?: React.ReactNode;
 };
 
-const LoadingButton: React.FC<LoadingButtonProps> = ({
+const Button: React.FC<ButtonProps> = ({
   type,
   variant = "default",
   className = "",
@@ -46,8 +46,6 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
       {isLoading ? (
         <div role="status" className="flex justify-center">
           <div className="w-6 h-6 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
-          <div className="w-6 h-6 mr-2 border-b-2 border-white rounded-full animate-spin"></div>
-          <div className="w-6 h-6 border-b-2 border-white rounded-full animate-spin"></div>
         </div>
       ) : (
         children
@@ -56,4 +54,4 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   );
 };
 
-export default LoadingButton;
+export default Button;

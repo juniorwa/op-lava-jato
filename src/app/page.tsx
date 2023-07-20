@@ -47,7 +47,6 @@ const BookingPage: NextPage = () => {
     selectedProdutPrice: "",
     step: 0,
   } as BookingType);
-  console.log(bookingData);
 
   const [dateList, setDateList] = useState<string[]>([]);
   const [checkoutIsLoading, setIsCheckoutLoading] = useState<boolean>(false);
@@ -101,7 +100,7 @@ const BookingPage: NextPage = () => {
   if (isLoading)
     return (
       <div className="flex flex-col items-center mt-10">
-        <Spinner />
+        <Spinner height={10} width={10} />
       </div>
     );
   return (
@@ -224,7 +223,7 @@ const BookingPage: NextPage = () => {
           <Button
             type="button"
             isLoading={checkoutIsLoading}
-            disabled={!bookingData.selectedTime}
+            disabled={!bookingData.selectedTime || checkoutIsLoading}
             onClick={handleBuyProduct}
           >
             Book
