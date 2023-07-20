@@ -3,7 +3,7 @@ import React from "react";
 
 const Header: React.FC = () => {
   return (
-    <header className="flex justify-center p-10 border-b border-white">
+    <header className="flex justify-center p-10">
       <div className="w-full max-w-5xl">
         <div className="flex items-center justify-between">
           <nav className="flex items-center">

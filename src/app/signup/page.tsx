@@ -43,8 +43,8 @@ const SignUp: NextPage = () => {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-10 pt-0">
-      <div className="w-full max-w-md p-10 rounded-lg">
+    <main className="flex flex-col items-center min-h-screen p-10">
+      <div className="w-full max-w-lg">
         <h2 className="mb-8 text-3xl text-center">Register User</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
@@ -55,7 +55,7 @@ const SignUp: NextPage = () => {
               type="text"
               id="name"
               {...register("name", { required: "Name is required." })}
-              className="w-full p-2 border rounded-lg bg-gray-900"
+              className="w-full p-2 border rounded-lg border-black"
             />
             {errors.name && (
               <p className="text-red-500">{errors.name.message}</p>
@@ -70,7 +70,7 @@ const SignUp: NextPage = () => {
               type="text"
               id="surname"
               {...register("surname", { required: "Surname is required." })}
-              className="w-full p-2 border rounded-lg bg-gray-900"
+              className="w-full p-2 border rounded-lg border-black"
             />
             {errors.surname && (
               <p className="text-red-500">{errors.surname.message}</p>
@@ -85,7 +85,7 @@ const SignUp: NextPage = () => {
               type="email"
               id="email"
               {...register("email", { required: "Email is required." })}
-              className="w-full p-2 border rounded-lg bg-gray-900"
+              className="w-full p-2 border rounded-lg border-black"
             />
             {errors.email && (
               <p className="text-red-500">{errors.email.message}</p>
@@ -100,7 +100,7 @@ const SignUp: NextPage = () => {
               type="password"
               id="password"
               {...register("password", { required: "Password is required." })}
-              className="w-full p-2 border rounded-lg bg-gray-900"
+              className="w-full p-2 border rounded-lg border-black"
             />
             {errors.password && (
               <p className="text-red-500">{errors.password.message}</p>

@@ -21,21 +21,21 @@ const BookingPage: NextPage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-10">
+    <div className="flex flex-col items-center min-h-screen p-10">
       <div className="w-full max-w-lg">
-        <h2 className="mb-8 text-3xl text-center text-white">
+        <h2 className="mb-8 text-3xl text-center">
           Book a Time Slot
         </h2>
         <div className="mb-4">
-          <label className="block mb-2 text-white">Select Time Slot</label>
+          <label className="block mb-2">Select Time Slot</label>
           <div className="flex flex-col gap-4">
             {availableTimeSlots.map((timeSlot) => (
               <button
                 key={timeSlot}
                 type="button"
-                className={`text-white py-2 px-4 text-center border border-white rounded-lg ${
+                className={`py-2 px-4 text-center border border-black rounded-lg ${
                   selectedTimeSlot === timeSlot
-                    ? "bg-blue-500"
+                    ? "bg-blue-500 text-white"
                     : "bg-transparent"
                 }`}
                 onClick={() => handleTimeSlotClick(timeSlot)}
@@ -51,7 +51,7 @@ const BookingPage: NextPage = () => {
           isLoading={false}
           onClick={() => alert(JSON.stringify(selectedTimeSlot))}
         >
-          Book Now
+          Continue
         </Button>
       </div>
     </div>
