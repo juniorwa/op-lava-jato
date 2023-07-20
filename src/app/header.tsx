@@ -7,7 +7,7 @@ const Header: React.FC = () => {
       <div className="w-full max-w-5xl">
         <div className="flex items-center justify-between">
           <nav className="flex items-center">
-            <Link href="/booking" className="mr-4 text-blue-500 hover:text-blue-700">
+            <Link href="/" className="mr-4 text-blue-500 hover:text-blue-700">
               Booking
             </Link>
 

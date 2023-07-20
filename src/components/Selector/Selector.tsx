@@ -4,9 +4,15 @@ type SelectorProps = {
   item: string;
   selectedItem: string;
   onClick: () => void;
+  children?: React.ReactNode;
 };
 
-const Selector: React.FC<SelectorProps> = ({ item, selectedItem, onClick }) => {
+const Selector: React.FC<SelectorProps> = ({
+  item,
+  selectedItem,
+  onClick,
+  children,
+}) => {
   return (
     <button
       type="button"
@@ -15,7 +21,7 @@ const Selector: React.FC<SelectorProps> = ({ item, selectedItem, onClick }) => {
       }`}
       onClick={onClick}
     >
-      {item}
+      {children || item}
     </button>
   );
 };
