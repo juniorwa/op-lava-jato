@@ -1,5 +1,10 @@
-import Link from "next/link";
+"use client";
+import dynamic from "next/dynamic";
 import React from "react";
+
+const DynamicDrawer = dynamic(() => import("@/components/Drawer/Drawer"), {
+  ssr: false,
+});
 
 const Header: React.FC = () => {
   return (
@@ -7,26 +12,10 @@ const Header: React.FC = () => {
       <div className="w-full max-w-5xl">
         <div className="flex items-center justify-between">
           <nav className="flex items-center">
-            <Link href="/" className="mr-4 text-blue-500 hover:text-blue-700">
-              Booking
-            </Link>
-
-            <Link
-              href="/signup"
-              className="mr-4 text-blue-500 hover:text-blue-700"
-            >
-              SignUp
-            </Link>
-
-            <Link
-              href="/admin"
-              className="mr-4 text-blue-500 hover:text-blue-700"
-            >
-              Admin
-            </Link>
+            {/* <DynamicDrawer /> */}
           </nav>
           <div className="flex items-center">
-            <div className="mr-4">LOGO</div>
+            {/* <div className="mr-4">LOGO</div> */}
           </div>
         </div>
       </div>

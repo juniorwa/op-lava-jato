@@ -1,8 +1,9 @@
 "use client";
+import React from "react";
 import Button from "@/components/Button/Button";
 import { NextPage } from "next";
-import React from "react";
 import { useForm } from "react-hook-form";
+import TextInput from "@/components/TextInput/TextInput";
 
 type FormData = {
   name: string;
@@ -47,67 +48,35 @@ const SignUp: NextPage = () => {
       <div className="w-full max-w-lg">
         <h2 className="mb-8 text-3xl text-center">Register User</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block mb-2">
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              {...register("name", { required: "Name is required." })}
-              className="w-full p-2 border rounded-lg border-black"
-            />
-            {errors.name && (
-              <p className="text-red-500">{errors.name.message}</p>
-            )}
-          </div>
+          <TextInput
+            label="Name"
+            id="name"
+            error={errors.name?.message}
+            register={register}
+          />
 
-          <div className="mb-4">
-            <label htmlFor="surname" className="block mb-2">
-              Surname
-            </label>
-            <input
-              type="text"
-              id="surname"
-              {...register("surname", { required: "Surname is required." })}
-              className="w-full p-2 border rounded-lg border-black"
-            />
-            {errors.surname && (
-              <p className="text-red-500">{errors.surname.message}</p>
-            )}
-          </div>
+          <TextInput
+            label="Surname"
+            id="surname"
+            error={errors.surname?.message}
+            register={register}
+          />
 
-          <div className="mb-4">
-            <label htmlFor="email" className="block mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              {...register("email", { required: "Email is required." })}
-              className="w-full p-2 border rounded-lg border-black"
-            />
-            {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
-            )}
-          </div>
+          <TextInput
+            label="Email"
+            id="email"
+            error={errors.email?.message}
+            register={register}
+          />
 
-          <div className="mb-4">
-            <label htmlFor="password" className="block mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              {...register("password", { required: "Password is required." })}
-              className="w-full p-2 border rounded-lg border-black"
-            />
-            {errors.password && (
-              <p className="text-red-500">{errors.password.message}</p>
-            )}
-          </div>
+          <TextInput
+            label="Password"
+            id="password"
+            error={errors.password?.message}
+            register={register}
+          />
 
-          <Button isLoading={isSubmitting} type="submit">
+          <Button isLoading={isSubmitting} type="submit" className="mt-3">
             Sign Up
           </Button>
         </form>

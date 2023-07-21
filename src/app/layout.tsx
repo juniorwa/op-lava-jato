@@ -1,4 +1,5 @@
 import "./globals.css";
+import 'react-modern-drawer/dist/index.css'
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Header from "./header";

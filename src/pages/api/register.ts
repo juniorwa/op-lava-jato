@@ -48,7 +48,11 @@ export default async function handler(
       });
 
       // Return encrypted password
-      return res.status(200).json({ ...user });
+      return res.status(200).json({
+        id: user.id,
+        name,
+        email,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server error." });
