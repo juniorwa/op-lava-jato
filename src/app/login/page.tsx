@@ -14,7 +14,7 @@ type FormData = {
   password: string;
 };
 
-const SignUp: NextPage = () => {
+const SignIn: NextPage = () => {
   const {
     register,
     handleSubmit,
@@ -48,22 +48,8 @@ const SignUp: NextPage = () => {
   return (
     <main className="flex flex-col items-center min-h-screen p-10">
       <div className="w-full max-w-lg">
-        <h2 className="mb-5 text-3xl text-center">Register</h2>
+        <h2 className="mb-5 text-3xl text-center">Sign In</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextInput
-            label="Name"
-            id="name"
-            error={errors.name?.message}
-            register={register}
-          />
-
-          <TextInput
-            label="Surname"
-            id="surname"
-            error={errors.surname?.message}
-            register={register}
-          />
-
           <TextInput
             label="Email"
             id="email"
@@ -89,14 +75,14 @@ const SignUp: NextPage = () => {
             </div>
           </Button>
           <Button isLoading={isSubmitting} type="submit" className="mt-3">
-            Sign Up
+            Sign In
           </Button>
         </form>
 
         <p className="mt-4 text-center">
-          Already have an account?{" "}
-          <Link href="/login" className="text-blue-500 hover:text-blue-700">
-            Sign In
+          {"Don't have an account?"}{" "}
+          <Link href="/signup" className="text-blue-500 hover:text-blue-700">
+            Sign Up
           </Link>
         </p>
       </div>
@@ -104,4 +90,4 @@ const SignUp: NextPage = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;
