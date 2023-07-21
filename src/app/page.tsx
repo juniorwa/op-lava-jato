@@ -16,6 +16,18 @@ const availableTimeSlots = [
   "3:00 PM",
 ];
 
+const bookingDataInitialState = {
+  formattedDate: "",
+  selectedTime: "",
+  selectedProductId: "",
+  selectedProductNane: "",
+  selectedProdutPrice: "",
+  step: 0,
+  selectedDayOfWeek: "",
+  selectedDate: 0,
+  selectedMonth: "",
+};
+
 type ProductType = {
   id: string;
   name: string;
@@ -23,51 +35,19 @@ type ProductType = {
   default_price: string;
 };
 
-export type BookingType = {
-  selectedDay: string;
-  selectedTime: string;
-  selectedProductId: string;
-  selectedProductNane: string;
-  selectedProdutPrice: string;
-  selectedProductDefaultPrice: string;
-  step: number;
-};
+export type BookingType = typeof bookingDataInitialState;
 
 const BookingPage: NextPage = () => {
   const { data, error, isLoading } = useSWR<ProductType[]>(
     "/api/getStripePrices",
     fetcher
   );
+  const [bookingData, setBookingData] = useState(
+    bookingDataInitialState as BookingType
+  );
+  console.log(bookingData);
 
-  const [bookingData, setBookingData] = useState({
-    selectedDay: "",
-    selectedTime: "",
-    selectedProductId: "",
-    selectedProductNane: "",
-    selectedProdutPrice: "",
-    step: 0,
-  } as BookingType);
-
-  const [dateList, setDateList] = useState<string[]>([]);
   const [checkoutIsLoading, setIsCheckoutLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    const today = new Date();
-    const dateOptions: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-    };
-
-    const newDateList: string[] = [];
-    for (let i = 0; i < 7; i++) {
-      const currentDate = new Date();
-      currentDate.setDate(today.getDate() + i);
-      newDateList.push(currentDate.toLocaleDateString(undefined, dateOptions));
-    }
-
-    setDateList(newDateList);
-  }, []);
 
   const handleBuyProduct = async (): Promise<void> => {
     try {
@@ -78,7 +58,10 @@ const BookingPage: NextPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          booking: bookingData,
+          booking: {
+            ...bookingData,
+            selectedMonth: bookingData.selectedMonth,
+          },
         }),
       });
 
@@ -90,6 +73,59 @@ const BookingPage: NextPage = () => {
       console.log(error);
     }
   };
+  const [dateList, setDateList] = useState<
+    {
+      selectedDayOfWeek: string;
+      selectedDate: number;
+      selectedMonth: string;
+      selectedYear: number;
+      formattedDate: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    const today = new Date();
+    const dateOptions: Intl.DateTimeFormatOptions = {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    };
+
+    const newDateList: {
+      selectedDayOfWeek: string;
+      selectedDate: number;
+      selectedMonth: string;
+      selectedYear: number;
+      formattedDate: string;
+    }[] = [];
+
+    for (let i = 0; i < 7; i++) {
+      const currentDate = new Date();
+      currentDate.setDate(today.getDate() + i);
+
+      const formattedDate = currentDate.toLocaleDateString(
+        undefined,
+        dateOptions
+      );
+      const selectedDayOfWeek = formattedDate.split(",")[0].trim();
+      const selectedMonth = currentDate.toLocaleString("default", {
+        month: "short",
+      });
+      const selectedDate = currentDate.getDate();
+      const selectedYear = currentDate.getFullYear();
+
+      newDateList.push({
+        selectedDayOfWeek,
+        selectedDate,
+        selectedMonth,
+        selectedYear, // Adding the year here
+        formattedDate,
+      });
+    }
+
+    setDateList(newDateList);
+  }, []);
 
   if (error)
     return (
@@ -128,7 +164,6 @@ const BookingPage: NextPage = () => {
                         selectedProductId: product.id,
                         selectedProductNane: product.name,
                         selectedProdutPrice: product.price,
-                        selectedProductDefaultPrice: product.default_price,
                       }))
                     }
                   >
@@ -139,13 +174,13 @@ const BookingPage: NextPage = () => {
             {bookingData.step === 1 &&
               dateList.map((date) => (
                 <Selector
-                  key={date}
-                  item={date}
-                  selectedItem={bookingData.selectedDay}
+                  key={date.formattedDate}
+                  item={date.formattedDate}
+                  selectedItem={bookingData.formattedDate}
                   onClick={() =>
                     setBookingData((prev) => ({
                       ...prev,
-                      selectedDay: date,
+                      ...date,
                     }))
                   }
                 />
@@ -173,17 +208,7 @@ const BookingPage: NextPage = () => {
             variant="danger"
             className="mb-3"
             isLoading={false}
-            onClick={() =>
-              setBookingData(() => ({
-                selectedDay: "",
-                selectedTime: "",
-                selectedProductId: "",
-                selectedProductNane: "",
-                selectedProdutPrice: "",
-                selectedProductDefaultPrice: "",
-                step: 0,
-              }))
-            }
+            onClick={() => setBookingData(bookingDataInitialState)}
           >
             Cancel
           </Button>
@@ -208,7 +233,7 @@ const BookingPage: NextPage = () => {
           <Button
             type="button"
             isLoading={false}
-            disabled={!bookingData.selectedDay}
+            disabled={!bookingData.formattedDate}
             onClick={() =>
               setBookingData((prev) => ({
                 ...prev,
