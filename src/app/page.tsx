@@ -7,7 +7,7 @@ import useLocalStorage from "@/hooks/useLocalStorage/useLocalStorage";
 import { fetcher } from "@/utils/fetcher/fetcher";
 import { NextPage } from "next";
 import React, { useState } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import useSWR from "swr";
 
 export const bookingDataInitialState = {
@@ -67,7 +67,7 @@ const BookingPage: NextPage = () => {
       window.location.href = checkoutUrl;
     } catch (error: any) {
       setIsCheckoutLoading(false);
-      toast.error(`An error occured`);
+      alert(`An error occured`);
       console.log(error);
     }
   };
@@ -80,7 +80,7 @@ const BookingPage: NextPage = () => {
   if (isLoading || checkoutIsLoading)
     return (
       <div className="flex flex-col items-center mt-10">
-        <Spinner height={"10"} width={"10"} />
+        <Spinner />
       </div>
     );
   return (
