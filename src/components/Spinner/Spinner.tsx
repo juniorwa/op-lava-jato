@@ -1,11 +1,11 @@
 import React from "react";
 
 type SpinnerProps = {
-  height?: number;
-  width?: number;
+  height?: string;
+  width?: string;
 };
 
-const Spinner: React.FC<SpinnerProps> = ({ height = 6, width = 6 }) => {
+const Spinner: React.FC<SpinnerProps> = ({ height = "6", width = "6" }) => {
   return (
     <div role="status">
       <svg

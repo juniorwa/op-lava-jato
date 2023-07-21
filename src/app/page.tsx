@@ -77,10 +77,10 @@ const BookingPage: NextPage = () => {
         <h1>Error loading page...</h1>
       </div>
     );
-  if (isLoading)
+  if (isLoading || checkoutIsLoading)
     return (
       <div className="flex flex-col items-center mt-10">
-        <Spinner height={10} width={10} />
+        <Spinner height={"10"} width={"10"} />
       </div>
     );
   return (
