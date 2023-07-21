@@ -8,6 +8,7 @@ import GoogleIcon from "@/icons/GoogleIcon/GoogleIcon";
 import Link from "next/link";
 import { Toaster, toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import useLocalStorage from "@/hooks/useLocalStorage/useLocalStorage";
 
 type FormData = {
   name: string;
@@ -33,6 +34,8 @@ const SignIn: NextPage = () => {
   } = useForm<FormData>();
   const router = useRouter();
 
+  const [, setToken] = useLocalStorage<string>("", "token");
+
   const onSubmit = async (data: FormData) => {
     try {
       const response = await fetch("/api/login", {
@@ -49,7 +52,7 @@ const SignIn: NextPage = () => {
 
       const responseData: LoginResponse = await response.json();
 
-      localStorage.setItem("token", responseData.token);
+      setToken(responseData.token);
 
       toast.success(`Welcome ${responseData.user.name}`);
 
