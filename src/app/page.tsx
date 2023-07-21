@@ -2,6 +2,7 @@
 import Button from "@/components/Button/Button";
 import Selector from "@/components/Selector/Selector";
 import Spinner from "@/components/Spinner/Spinner";
+import useGetTime from "@/hooks/useGetTime/useGetTime";
 import { fetcher } from "@/utils/fetcher/fetcher";
 import { NextPage } from "next";
 import React, { useEffect, useState } from "react";
@@ -45,9 +46,8 @@ const BookingPage: NextPage = () => {
   const [bookingData, setBookingData] = useState(
     bookingDataInitialState as BookingType
   );
-  console.log(bookingData);
-
   const [checkoutIsLoading, setIsCheckoutLoading] = useState<boolean>(false);
+  const dates = useGetTime();
 
   const handleBuyProduct = async (): Promise<void> => {
     try {
@@ -73,60 +73,6 @@ const BookingPage: NextPage = () => {
       console.log(error);
     }
   };
-  const [dateList, setDateList] = useState<
-    {
-      selectedDayOfWeek: string;
-      selectedDate: number;
-      selectedMonth: string;
-      selectedYear: number;
-      formattedDate: string;
-    }[]
-  >([]);
-
-  useEffect(() => {
-    const today = new Date();
-    const dateOptions: Intl.DateTimeFormatOptions = {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    };
-
-    const newDateList: {
-      selectedDayOfWeek: string;
-      selectedDate: number;
-      selectedMonth: string;
-      selectedYear: number;
-      formattedDate: string;
-    }[] = [];
-
-    for (let i = 0; i < 7; i++) {
-      const currentDate = new Date();
-      currentDate.setDate(today.getDate() + i);
-
-      const formattedDate = currentDate.toLocaleDateString(
-        undefined,
-        dateOptions
-      );
-      const selectedDayOfWeek = formattedDate.split(",")[0].trim();
-      const selectedMonth = currentDate.toLocaleString("default", {
-        month: "short",
-      });
-      const selectedDate = currentDate.getDate();
-      const selectedYear = currentDate.getFullYear();
-
-      newDateList.push({
-        selectedDayOfWeek,
-        selectedDate,
-        selectedMonth,
-        selectedYear, // Adding the year here
-        formattedDate,
-      });
-    }
-
-    setDateList(newDateList);
-  }, []);
-
   if (error)
     return (
       <div className="flex flex-col items-center mt-10">
@@ -172,7 +118,7 @@ const BookingPage: NextPage = () => {
                   </Selector>
                 ))}
             {bookingData.step === 1 &&
-              dateList.map((date) => (
+              dates.map((date) => (
                 <Selector
                   key={date.formattedDate}
                   item={date.formattedDate}
