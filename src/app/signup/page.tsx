@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import TextInput from "@/components/TextInput/TextInput";
 import GoogleIcon from "@/icons/GoogleIcon/GoogleIcon";
 import Link from "next/link";
+import { Toaster, toast } from "react-hot-toast";
 
 type FormData = {
   name: string;
@@ -22,8 +23,6 @@ const SignUp: NextPage = () => {
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    alert(JSON.stringify(data));
-
     try {
       const response = await fetch("/api/register", {
         method: "POST",
@@ -37,11 +36,12 @@ const SignUp: NextPage = () => {
         throw new Error(response.statusText);
       }
 
-      const responseData = await response.json();
+      await response.json();
 
-      console.log({ successData: responseData });
+      toast.success("Successfully registered!");
     } catch (error) {
-      console.error("An error occurred:", error);
+      toast.error(`An error occured`);
+      console.log(error);
     }
   };
 
@@ -69,6 +69,7 @@ const SignUp: NextPage = () => {
             id="email"
             error={errors.email?.message}
             register={register}
+            type="email"
           />
 
           <TextInput
@@ -76,6 +77,7 @@ const SignUp: NextPage = () => {
             id="password"
             error={errors.password?.message}
             register={register}
+            type="password"
           />
           <Button
             isLoading={false}
@@ -100,6 +102,14 @@ const SignUp: NextPage = () => {
           </Link>
         </p>
       </div>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 5000,
+        }}
+      />
     </main>
   );
 };

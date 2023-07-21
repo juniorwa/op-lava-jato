@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import TextInput from "@/components/TextInput/TextInput";
 import GoogleIcon from "@/icons/GoogleIcon/GoogleIcon";
 import Link from "next/link";
+import { Toaster, toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   name: string;
@@ -14,18 +16,26 @@ type FormData = {
   password: string;
 };
 
+type LoginResponse = {
+  token: string;
+  user: {
+    name: string;
+    email: string;
+    surname: string;
+  };
+};
+
 const SignIn: NextPage = () => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
+  const router = useRouter();
 
   const onSubmit = async (data: FormData) => {
-    alert(JSON.stringify(data));
-
     try {
-      const response = await fetch("/api/register", {
+      const response = await fetch("/api/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,10 +47,17 @@ const SignIn: NextPage = () => {
         throw new Error(response.statusText);
       }
 
-      const responseData = await response.json();
+      const responseData: LoginResponse = await response.json();
 
-      console.log({ successData: responseData });
+      localStorage.setItem("token", responseData.token);
+
+      toast.success(`Welcome ${responseData.user.name}`);
+
+      setTimeout(() => {
+        router.push("/");
+      }, 2000);
     } catch (error) {
+      toast.error(`An error occured`);
       console.error("An error occurred:", error);
     }
   };
@@ -55,6 +72,7 @@ const SignIn: NextPage = () => {
             id="email"
             error={errors.email?.message}
             register={register}
+            type="email"
           />
 
           <TextInput
@@ -62,6 +80,7 @@ const SignIn: NextPage = () => {
             id="password"
             error={errors.password?.message}
             register={register}
+            type="password"
           />
           <Button
             isLoading={false}
@@ -86,6 +105,14 @@ const SignIn: NextPage = () => {
           </Link>
         </p>
       </div>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        gutter={8}
+        toastOptions={{
+          duration: 5000,
+        }}
+      />
     </main>
   );
 };

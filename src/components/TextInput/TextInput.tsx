@@ -6,6 +6,7 @@ interface TextInputProps {
   error?: string;
   register: any;
   className?: string;
+  type?: "password" | "email" | "text";
 }
 
 const TextInput: React.FC<TextInputProps> = ({
@@ -13,7 +14,8 @@ const TextInput: React.FC<TextInputProps> = ({
   id,
   error,
   register,
-  className,
+  className = "",
+  type = "text",
 }) => {
   return (
     <div className={`mb-2 ${className}`}>
@@ -21,7 +23,7 @@ const TextInput: React.FC<TextInputProps> = ({
         {label}
       </label>
       <input
-        type="text"
+        type={type}
         id={id}
         {...register(id, { required: `${label} is required.` })}
         className="w-full p-2 border rounded-lg border-black focus:border-blue-500 !important"

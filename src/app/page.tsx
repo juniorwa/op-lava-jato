@@ -19,7 +19,6 @@ const availableTimeSlots = [
 
 const bookingDataInitialState = {
   formattedDate: "",
-  selectedTime: "",
   selectedProductId: "",
   selectedProductNane: "",
   selectedProdutPrice: "",
@@ -27,6 +26,8 @@ const bookingDataInitialState = {
   selectedDayOfWeek: "",
   selectedDate: 0,
   selectedMonth: "",
+  selectedYear: 0,
+  selectedTime: "",
   selectedProductDefaultPrice: "",
 };
 

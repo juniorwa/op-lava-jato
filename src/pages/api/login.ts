@@ -11,7 +11,6 @@ export default async function handler(
     try {
       const { email, password }: { email: string; password: string } = req.body;
 
-      // Checking if data was provided
       if (!email) {
         return res.status(400).json({ error: "Email is required." });
       }
@@ -20,20 +19,20 @@ export default async function handler(
         return res.status(400).json({ error: "Password is required." });
       }
 
-      // Fetch user from the database by email
       const user = await prisma.user.findUnique({ where: { email } });
 
-      // Check if user exists and verify the password
-      if (!user || !(await bcrypt.compare(password, user.password))) {
+      if (!user || !user.password) {
         return res.status(401).json({ error: "Invalid credentials." });
       }
 
-      // Create a JWT token with an expiration of 1 day (24 hours)
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
+      if (!(await bcrypt.compare(password, user.password))) {
+        return res.status(401).json({ error: "Invalid credentials." });
+      }
+
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, {
         expiresIn: "1d",
       });
 
-      // Return the token and user information
       return res.status(200).json({
         token,
         user: {
