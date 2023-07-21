@@ -12,13 +12,13 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    if (!booking.selectedProductDefaultPrice) {
+    if (!booking.formattedDate) {
       return res.status(400).json({
         error: "Price was not found.",
       });
     }
 
-    const success_url = `${process.env.APP_URL}/success?day=${booking.selectedDay}&time=${booking.selectedTime}&service=${booking.selectedProductNane}`;
+    const success_url = `${process.env.APP_URL}/success?day=${booking.formattedDate}&time=${booking.selectedTime}&service=${booking.selectedProductNane}`;
     const cancel_url = `${process.env.APP_URL}/`;
 
     const checkoutSession = await stripe.checkout.sessions.create({

@@ -5,7 +5,7 @@ import Spinner from "@/components/Spinner/Spinner";
 import useGetTime from "@/hooks/useGetTime/useGetTime";
 import { fetcher } from "@/utils/fetcher/fetcher";
 import { NextPage } from "next";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
 
 const availableTimeSlots = [
@@ -27,6 +27,7 @@ const bookingDataInitialState = {
   selectedDayOfWeek: "",
   selectedDate: 0,
   selectedMonth: "",
+  selectedProductDefaultPrice: "",
 };
 
 type ProductType = {
@@ -60,7 +61,6 @@ const BookingPage: NextPage = () => {
         body: JSON.stringify({
           booking: {
             ...bookingData,
-            selectedMonth: bookingData.selectedMonth,
           },
         }),
       });
@@ -110,6 +110,7 @@ const BookingPage: NextPage = () => {
                         selectedProductId: product.id,
                         selectedProductNane: product.name,
                         selectedProdutPrice: product.price,
+                        selectedProductDefaultPrice: product.default_price,
                       }))
                     }
                   >
