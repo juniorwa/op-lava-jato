@@ -1,17 +1,31 @@
 import { NextPage } from "next";
 import React from "react";
-import querystring from "querystring";
 import Button from "@/components/Button/Button";
+import { stripe } from "@/lib/stripe";
+import prisma from "@/lib/prismaClient";
 
 type SuccessProps = {
   searchParams: {
     day: string;
     time: string;
     service: string;
+    session_id: string;
+    day_week: string;
+    user_id: string;
+    month: string;
+    year: string;
   };
 };
 
-const Success: NextPage<SuccessProps> = ({ searchParams }) => {
+const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
+  const session = await stripe.checkout.sessions.retrieve(
+    searchParams.session_id
+  );
+
+  const { day, day_week, month, service, session_id, time, user_id, year } =
+    searchParams;
+  console.log({ day, day_week, month, service, session_id, time, user_id, year });
+
   return (
     <main className="flex min-h-screen justify-center p-10">
       <div className="w-full max-w-lg flex items-center flex-col">
@@ -28,7 +42,7 @@ const Success: NextPage<SuccessProps> = ({ searchParams }) => {
           Booking Confirmed!
         </span>
         <span className="mt-1 font-bold">
-          {searchParams.service} {searchParams.day} {searchParams.time}
+          {service} {day_week} {day} {month} {searchParams.time}
         </span>
         <a href="/" className="mt-3 w-full">
           <Button isLoading={false} type="button">

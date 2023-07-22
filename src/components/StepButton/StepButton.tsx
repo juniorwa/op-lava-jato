@@ -1,5 +1,6 @@
-import { BookingType, bookingDataInitialState } from "@/app/page";
+import { BookingType } from "@/app/page";
 import Button from "../Button/Button";
+import { bookingDataInitialState } from "@/constants";
 
 type StepButtonProps = {
   step: number;

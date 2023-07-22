@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import Button from "@/components/Button/Button";
 import { NextPage } from "next";
 import { useForm } from "react-hook-form";
@@ -7,7 +7,7 @@ import TextInput from "@/components/TextInput/TextInput";
 import GoogleIcon from "@/icons/GoogleIcon/GoogleIcon";
 import Link from "next/link";
 import { Toaster, toast } from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import useLocalStorage from "@/hooks/useLocalStorage/useLocalStorage";
 
 type FormData = {
@@ -33,6 +33,20 @@ const SignIn: NextPage = () => {
     formState: { errors, isSubmitting },
   } = useForm<FormData>();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const error = searchParams?.get("error");
+
+  useEffect(() => {
+    if (error) {
+      toast("You need to login in order to book!", {
+        icon: "⚠️",
+        style: {
+          borderRadius: "10px",
+        },
+      });
+    }
+  }, []);
 
   const [, setToken] = useLocalStorage<string>("", "token");
 

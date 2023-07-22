@@ -2,27 +2,13 @@
 import SelectionSteps from "@/components/SelectionSteps/SelectionSteps";
 import Spinner from "@/components/Spinner/Spinner";
 import StepButton from "@/components/StepButton/StepButton";
+import { bookingDataInitialState } from "@/constants";
 import useGetTime from "@/hooks/useGetTime/useGetTime";
 import useLocalStorage from "@/hooks/useLocalStorage/useLocalStorage";
 import { fetcher } from "@/utils/fetcher/fetcher";
 import { NextPage } from "next";
 import React, { useState } from "react";
-import { Toaster } from "react-hot-toast";
 import useSWR from "swr";
-
-export const bookingDataInitialState = {
-  formattedDate: "",
-  selectedProductId: "",
-  selectedProductNane: "",
-  selectedProdutPrice: "",
-  step: 0,
-  selectedDayOfWeek: "",
-  selectedDate: 0,
-  selectedMonth: "",
-  selectedYear: 0,
-  selectedTime: "",
-  selectedProductDefaultPrice: "",
-};
 
 export type ProductType = {
   id: string;
@@ -46,7 +32,7 @@ const BookingPage: NextPage = () => {
   const dates = useGetTime();
 
   const [token] = useLocalStorage<string>("", "token");
-
+  
   const handleBuyProduct = async (): Promise<void> => {
     try {
       setIsCheckoutLoading(true);
@@ -71,6 +57,7 @@ const BookingPage: NextPage = () => {
       console.log(error);
     }
   };
+
   if (error)
     return (
       <div className="flex flex-col items-center mt-10">
@@ -113,14 +100,6 @@ const BookingPage: NextPage = () => {
           handleBuyProduct={handleBuyProduct}
         />
       </div>
-      <Toaster
-        position="top-center"
-        reverseOrder={false}
-        gutter={8}
-        toastOptions={{
-          duration: 5000,
-        }}
-      />
     </div>
   );
 };
