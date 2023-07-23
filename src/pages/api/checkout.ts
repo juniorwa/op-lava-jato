@@ -15,6 +15,7 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
       selectedTime,
       selectedProductNane,
       selectedYear,
+      rawPrice
     } = booking;
 
     if (req.method !== "POST") {
@@ -47,6 +48,8 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
       }
     }
     // @ts-ignore
+    const userNumber: string = decoded.phoneNumber;
+    // @ts-ignore
     const userId: string = decoded.userId;
 
     if (!userId) {
@@ -61,7 +64,7 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const success_url = `${process.env.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}&day=${selectedDate}&year=${selectedYear}&day_week=${selectedDayOfWeek}&month=${selectedMonth}&time=${selectedTime}&service=${selectedProductNane}&user_id=${userId}`;
+    const success_url = `${process.env.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}&day=${selectedDate}&price=${rawPrice}&user_number=${userNumber}&year=${selectedYear}&day_week=${selectedDayOfWeek}&month=${selectedMonth}&time=${selectedTime}&service=${selectedProductNane}&user_id=${userId}`;
     const cancel_url = `${process.env.APP_URL}/`;
 
     const checkoutSession = await stripe.checkout.sessions.create({

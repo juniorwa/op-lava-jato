@@ -44,6 +44,7 @@ export default async function handler(
           email,
           name,
           password: hashedPassword,
+          surname
         },
       });
 

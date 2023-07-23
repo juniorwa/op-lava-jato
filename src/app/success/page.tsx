@@ -3,6 +3,7 @@ import React from "react";
 import Button from "@/components/Button/Button";
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prismaClient";
+import { redirect } from "next/navigation";
 
 type SuccessProps = {
   searchParams: {
@@ -14,17 +15,73 @@ type SuccessProps = {
     user_id: string;
     month: string;
     year: string;
+    userNumber: string;
+    price: string;
   };
 };
 
 const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
-  const session = await stripe.checkout.sessions.retrieve(
-    searchParams.session_id
-  );
+  const {
+    day,
+    day_week,
+    month,
+    service,
+    session_id,
+    time,
+    user_id,
+    year,
+    userNumber,
+    price,
+  } = searchParams;
 
-  const { day, day_week, month, service, session_id, time, user_id, year } =
-    searchParams;
-  console.log({ day, day_week, month, service, session_id, time, user_id, year });
+  if (
+    !day ||
+    !day_week ||
+    !month ||
+    !service ||
+    !session_id ||
+    !time ||
+    !user_id ||
+    !year ||
+    !price
+  ) {
+    redirect(process.env.APP_URL as string);
+  }
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    if (!userNumber) {
+      await prisma.user.update({
+        where: {
+          id: user_id,
+        },
+        data: {
+          phoneNumber: session.customer_details?.phone,
+        },
+      });
+    }
+
+    if (user_id) {
+      await prisma.booking.create({
+        data: {
+          selectedDate: Number(day),
+          selectedDayOfWeek: day_week,
+          selectedMonth: month,
+          selectedTime: time,
+          selectedYear: Number(year),
+          selectedProductDefaultPrice: Number(price),
+          user: {
+            connect: {
+              id: user_id,
+            },
+          },
+        },
+      });
+    }
+  } catch (error) {
+    redirect(process.env.APP_URL as string);
+  }
 
   return (
     <main className="flex min-h-screen justify-center p-10">

@@ -11,13 +11,14 @@ datasource db {
 }
 
 model User {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  email      String    @unique
-  name       String?
-  password   String?
-  phoneNumbe String?
-  bookings   Booking[]
-  active     Boolean?
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  email       String    @unique
+  name        String?
+  surname     String?
+  password    String?
+  phoneNumber String?
+  bookings    Booking[]
+  active      Boolean?  @default(false)
 }
 
 model Booking {

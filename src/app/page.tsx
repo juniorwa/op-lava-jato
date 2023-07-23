@@ -15,6 +15,7 @@ export type ProductType = {
   name: string;
   price: string;
   default_price: string;
+  raw_price: string;
 };
 
 export type BookingType = typeof bookingDataInitialState;
@@ -32,7 +33,7 @@ const BookingPage: NextPage = () => {
   const dates = useGetTime();
 
   const [token] = useLocalStorage<string>("", "token");
-  
+
   const handleBuyProduct = async (): Promise<void> => {
     try {
       setIsCheckoutLoading(true);

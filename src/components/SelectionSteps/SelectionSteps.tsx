@@ -43,6 +43,7 @@ const SelectionSteps: React.FC<SelectionStepsProps> = ({
                 selectedProductNane: product.name,
                 selectedProdutPrice: product.price,
                 selectedProductDefaultPrice: product.default_price,
+                rawPrice: product.raw_price,
               })
             }
           >

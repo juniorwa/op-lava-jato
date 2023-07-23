@@ -10,4 +10,5 @@ export const bookingDataInitialState = {
   selectedYear: 0,
   selectedTime: "",
   selectedProductDefaultPrice: "",
+  rawPrice: "",
 };
