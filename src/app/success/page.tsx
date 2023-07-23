@@ -63,21 +63,37 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
     }
 
     if (user_id) {
-      await prisma.booking.create({
-        data: {
+      const existingBooking = await prisma.booking.findFirst({
+        where: {
           selectedDate: Number(day),
           selectedDayOfWeek: day_week,
           selectedMonth: month,
           selectedTime: time,
           selectedYear: Number(year),
           selectedProductDefaultPrice: Number(price),
-          user: {
-            connect: {
-              id: user_id,
-            },
-          },
         },
       });
+
+      // If a booking does not already exist, create a new one
+      if (!existingBooking) {
+        await prisma.booking.create({
+          data: {
+            selectedDate: Number(day),
+            selectedDayOfWeek: day_week,
+            selectedMonth: month,
+            selectedTime: time,
+            selectedYear: Number(year),
+            selectedProductDefaultPrice: Number(price),
+            user: {
+              connect: {
+                id: user_id,
+              },
+            },
+          },
+        });
+      } else {
+        redirect(process.env.APP_URL as string);
+      }
     }
   } catch (error) {
     redirect(process.env.APP_URL as string);
