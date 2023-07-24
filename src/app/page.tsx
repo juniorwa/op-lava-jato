@@ -7,7 +7,10 @@ import useGetTime from "@/hooks/useGetTime/useGetTime";
 import useLocalStorage from "@/hooks/useLocalStorage/useLocalStorage";
 import { fetcher } from "@/utils/fetcher/fetcher";
 import { NextPage } from "next";
-import React, { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { Toaster, toast } from "react-hot-toast";
 import useSWR from "swr";
 
 export type ProductType = {
@@ -31,8 +34,16 @@ const BookingPage: NextPage = () => {
   );
   const [checkoutIsLoading, setIsCheckoutLoading] = useState<boolean>(false);
   const dates = useGetTime();
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const [token] = useLocalStorage<string>("", "token");
+  const checkoutError = searchParams?.get("error");
+  useEffect(() => {
+    if (checkoutError) {
+      alert(checkoutError);
+      router.push("/");
+    }
+  }, [checkoutError]);
 
   const handleBuyProduct = async (): Promise<void> => {
     try {
@@ -41,7 +52,6 @@ const BookingPage: NextPage = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           booking: {
@@ -73,6 +83,8 @@ const BookingPage: NextPage = () => {
     );
   return (
     <div className="flex flex-col items-center min-h-screen p-10">
+      <Toaster position="top-center" />
+
       <div className="w-full max-w-lg">
         <h2 className="mb-8 text-3xl text-center">Book Now!</h2>
         <div className="mb-4">

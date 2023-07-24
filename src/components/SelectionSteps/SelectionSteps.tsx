@@ -29,28 +29,26 @@ const SelectionSteps: React.FC<SelectionStepsProps> = ({
 }) => {
   switch (step) {
     case 0:
-      return data
-        ?.filter((item, index) => index < 4)
-        .map((product) => (
-          <Selector
-            key={product.id}
-            item={product.id}
-            selectedItem={bookingData.selectedProductId}
-            onClick={() =>
-              setBookingData({
-                ...bookingData,
-                selectedProductId: product.id,
-                selectedProductNane: product.name,
-                selectedProdutPrice: product.price,
-                selectedProductDefaultPrice: product.default_price,
-                rawPrice: product.raw_price,
-              })
-            }
-          >
-            <strong>{product.name}</strong>
-            <p>{product.price}</p>
-          </Selector>
-        ));
+      return data?.map((product) => (
+        <Selector
+          key={product.id}
+          item={product.id}
+          selectedItem={bookingData.selectedProductId}
+          onClick={() =>
+            setBookingData({
+              ...bookingData,
+              selectedProductId: product.id,
+              selectedProductNane: product.name,
+              selectedProdutPrice: product.price,
+              selectedProductDefaultPrice: product.default_price,
+              rawPrice: product.raw_price,
+            })
+          }
+        >
+          <strong>{product.name}</strong>
+          <p>{product.price}</p>
+        </Selector>
+      ));
     case 1:
       return dates.map((date) => (
         <Selector
