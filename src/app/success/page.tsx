@@ -42,7 +42,6 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
 
     const existingBooking = await prisma.booking.findFirst({
       where: {
-        selectedDate: Number(day),
         selectedDayOfWeek: day_week,
         selectedMonth: month,
         selectedTime: time,
@@ -50,7 +49,6 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
         selectedProductDefaultPrice: Number(price),
       },
     });
-    console.log(session.customer_details);
 
     // If a booking does not already exist, create a new one
     if (!existingBooking) {
