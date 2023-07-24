@@ -21,16 +21,8 @@ type SuccessProps = {
 };
 
 const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
-  const {
-    day,
-    day_week,
-    month,
-    service,
-    session_id,
-    time,
-    year,
-    price,
-  } = searchParams;
+  const { day, day_week, month, service, session_id, time, year, price } =
+    searchParams;
 
   if (
     !day ||
@@ -58,9 +50,25 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
         selectedProductDefaultPrice: Number(price),
       },
     });
+    console.log(session.customer_details);
 
     // If a booking does not already exist, create a new one
     if (!existingBooking) {
+      const userExists = await prisma.clientes.findFirst({
+        where: {
+          telefone: session.customer_details?.phone as string,
+        },
+      });
+      if (!userExists) {
+        await prisma.clientes.create({
+          data: {
+            telefone: session.customer_details?.phone as string,
+            email: session.customer_details?.email as string,
+            nome: session.customer_details?.name as string,
+            v: 0,
+          },
+        });
+      }
       await prisma.booking.create({
         data: {
           selectedDate: Number(day),

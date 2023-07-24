@@ -40,12 +40,12 @@ model Booking {
 model clientes {
   id        String             @id @default(auto()) @map("_id") @db.ObjectId
   v         Int                @map("__v")
-  createdAt DateTime           @db.Date
+  createdAt DateTime           @default(now())
   nome      String
   servicos  ClientesServicos[]
   telefone  String             @unique
   email     String?
-  updatedAt DateTime           @db.Date
+  updatedAt DateTime           @updatedAt
   Booking   Booking[]
 }
 
