@@ -28,9 +28,7 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
     service,
     session_id,
     time,
-    user_id,
     year,
-    userNumber,
     price,
   } = searchParams;
 
@@ -41,7 +39,6 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
     !service ||
     !session_id ||
     !time ||
-    !user_id ||
     !year ||
     !price
   ) {
@@ -51,49 +48,36 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
-    if (!userNumber) {
-      await prisma.user.update({
-        where: {
-          id: user_id,
-        },
-        data: {
-          phoneNumber: session.customer_details?.phone,
-        },
-      });
-    }
+    const existingBooking = await prisma.booking.findFirst({
+      where: {
+        selectedDate: Number(day),
+        selectedDayOfWeek: day_week,
+        selectedMonth: month,
+        selectedTime: time,
+        selectedYear: Number(year),
+        selectedProductDefaultPrice: Number(price),
+      },
+    });
 
-    if (user_id) {
-      const existingBooking = await prisma.booking.findFirst({
-        where: {
+    // If a booking does not already exist, create a new one
+    if (!existingBooking) {
+      await prisma.booking.create({
+        data: {
           selectedDate: Number(day),
           selectedDayOfWeek: day_week,
           selectedMonth: month,
           selectedTime: time,
           selectedYear: Number(year),
           selectedProductDefaultPrice: Number(price),
-        },
-      });
-
-      // If a booking does not already exist, create a new one
-      if (!existingBooking) {
-        await prisma.booking.create({
-          data: {
-            selectedDate: Number(day),
-            selectedDayOfWeek: day_week,
-            selectedMonth: month,
-            selectedTime: time,
-            selectedYear: Number(year),
-            selectedProductDefaultPrice: Number(price),
-            user: {
-              connect: {
-                id: user_id,
-              },
+          cliente: {
+            connect: {
+              telefone: session.customer_details?.phone as string,
             },
           },
-        });
-      } else {
-        redirect(process.env.APP_URL as string);
-      }
+        },
+      });
+    } else {
+      redirect(process.env.APP_URL as string);
     }
   } catch (error) {
     redirect(process.env.APP_URL as string);

@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { stripe } from "../../lib/stripe";
 import { BookingType } from "@/app/page";
-import jwt from "jsonwebtoken";
 
 const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
@@ -24,47 +23,13 @@ const checkout = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const token = req.headers.authorization?.split(" ")[1]; // Assuming Authorization: Bearer <token>
-    if (!token) {
-      return res.status(403).json({
-        checkoutUrl: `${process.env.APP_URL}?error=No token provided.`,
-      });
-    }
-
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    } catch (error) {
-      if (error instanceof jwt.JsonWebTokenError) {
-        // if the error happened because the JWT is invalid
-        return res.status(403).json({
-          checkoutUrl: `${process.env.APP_URL}/login?error=Invalid token.`,
-        });
-      } else {
-        // the error will be an instance of jwt.TokenExpiredError if the token expired
-        return res.status(403).json({
-          checkoutUrl: `${process.env.APP_URL}/login?error=Expired token.`,
-        });
-      }
-    }
-    // @ts-ignore
-    const userNumber: string = decoded.phoneNumber;
-    // @ts-ignore
-    const userId: string = decoded.userId;
-
-    if (!userId) {
-      return res.status(401).json({
-        checkoutUrl: `${process.env.APP_URL}/login?error=User not found.`,
-      });
-    }
-
     if (!selectedProductDefaultPrice) {
       return res.status(400).json({
         checkoutUrl: `${process.env.APP_URL}?error=Price was not found.`,
       });
     }
 
-    const success_url = `${process.env.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}&day=${selectedDate}&price=${rawPrice}&user_number=${userNumber}&year=${selectedYear}&day_week=${selectedDayOfWeek}&month=${selectedMonth}&time=${selectedTime}&service=${selectedProductNane}&user_id=${userId}`;
+    const success_url = `${process.env.APP_URL}/success?session_id={CHECKOUT_SESSION_ID}&day=${selectedDate}&price=${rawPrice}&year=${selectedYear}&day_week=${selectedDayOfWeek}&month=${selectedMonth}&time=${selectedTime}&service=${selectedProductNane}`;
     const cancel_url = `${process.env.APP_URL}/`;
 
     const checkoutSession = await stripe.checkout.sessions.create({
