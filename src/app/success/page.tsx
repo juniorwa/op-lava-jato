@@ -34,7 +34,7 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
     !year ||
     !price
   ) {
-    redirect(process.env.APP_URL as string);
+    redirect(`${process.env.APP_URL}/?error=Fields not provided`);
   }
 
   try {
@@ -85,7 +85,7 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
       },
     });
   } catch (error) {
-    redirect(process.env.APP_URL as string);
+    redirect(`${process.env.APP_URL}/?error=Error`);
   }
 
   return (
