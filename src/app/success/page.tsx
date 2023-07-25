@@ -57,6 +57,8 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
           telefone: session.customer_details?.phone as string,
         },
       });
+
+      // If user does not exists create one
       if (!userExists) {
         await prisma.clientes.create({
           data: {
@@ -64,6 +66,18 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
             email: session.customer_details?.email as string,
             nome: session.customer_details?.name as string,
             v: 0,
+          },
+        });
+      }
+
+      // If user exists but he does not have an email add email to it
+      if (userExists && !userExists.email) {
+        await prisma.clientes.update({
+          where: {
+            id: userExists.id,
+          },
+          data: {
+            email: session.customer_details?.email as string,
           },
         });
       }
