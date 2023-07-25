@@ -25,8 +25,11 @@ export type BookingType = typeof bookingDataInitialState;
 
 const BookingPage: NextPage = () => {
   const { data, error, isLoading } = useSWR<ProductType[]>(
-    "/api/getStripePrices",
-    fetcher
+    "/api/getprices",
+    fetcher,
+    {
+      revalidateOnFocus: false,
+    }
   );
   const [bookingData, setBookingData] = useLocalStorage(
     "booking_step",
