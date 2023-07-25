@@ -84,8 +84,8 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
         },
       },
     });
-  } catch (error) {
-    redirect(`${process.env.APP_URL}/?error=Error`);
+  } catch (error: any) {
+    redirect(`${process.env.APP_URL}/?error=${error.message}`);
   }
 
   return (
