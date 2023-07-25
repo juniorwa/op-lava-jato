@@ -40,65 +40,50 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
   try {
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
-    const existingBooking = await prisma.booking.findFirst({
+    const userExists = await prisma.clientes.findFirst({
       where: {
+        telefone: session.customer_details?.phone as string,
+      },
+    });
+
+    // If user does not exists create one
+    if (!userExists) {
+      await prisma.clientes.create({
+        data: {
+          telefone: session.customer_details?.phone as string,
+          email: session.customer_details?.email as string,
+          nome: session.customer_details?.name as string,
+          v: 0,
+        },
+      });
+    }
+
+    // If user exists but he does not have an email add email to it
+    if (userExists && !userExists.email) {
+      await prisma.clientes.update({
+        where: {
+          id: userExists.id,
+        },
+        data: {
+          email: session.customer_details?.email as string,
+        },
+      });
+    }
+    await prisma.booking.create({
+      data: {
+        selectedDate: Number(day),
         selectedDayOfWeek: day_week,
         selectedMonth: month,
         selectedTime: time,
         selectedYear: Number(year),
         selectedProductDefaultPrice: Number(price),
+        cliente: {
+          connect: {
+            telefone: session.customer_details?.phone as string,
+          },
+        },
       },
     });
-
-    // If a booking does not already exist, create a new one
-    if (!existingBooking) {
-      const userExists = await prisma.clientes.findFirst({
-        where: {
-          telefone: session.customer_details?.phone as string,
-        },
-      });
-
-      // If user does not exists create one
-      if (!userExists) {
-        await prisma.clientes.create({
-          data: {
-            telefone: session.customer_details?.phone as string,
-            email: session.customer_details?.email as string,
-            nome: session.customer_details?.name as string,
-            v: 0,
-          },
-        });
-      }
-
-      // If user exists but he does not have an email add email to it
-      if (userExists && !userExists.email) {
-        await prisma.clientes.update({
-          where: {
-            id: userExists.id,
-          },
-          data: {
-            email: session.customer_details?.email as string,
-          },
-        });
-      }
-      await prisma.booking.create({
-        data: {
-          selectedDate: Number(day),
-          selectedDayOfWeek: day_week,
-          selectedMonth: month,
-          selectedTime: time,
-          selectedYear: Number(year),
-          selectedProductDefaultPrice: Number(price),
-          cliente: {
-            connect: {
-              telefone: session.customer_details?.phone as string,
-            },
-          },
-        },
-      });
-    } else {
-      redirect(process.env.APP_URL as string);
-    }
   } catch (error) {
     redirect(process.env.APP_URL as string);
   }
