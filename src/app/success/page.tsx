@@ -4,6 +4,7 @@ import Button from "@/components/Button/Button";
 import { stripe } from "@/lib/stripe";
 import prisma from "@/lib/prismaClient";
 import { redirect } from "next/navigation";
+import emailjs from "@emailjs/browser";
 
 type SuccessProps = {
   searchParams: {
@@ -60,7 +61,7 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
 
     // If user exists but he does not have an email add email to it
     if (userExists && !userExists.email) {
-      await prisma.clientes.update({
+      const updatedUser = await prisma.clientes.update({
         where: {
           id: userExists.id,
         },
@@ -68,22 +69,49 @@ const Success: NextPage<SuccessProps> = async ({ searchParams }) => {
           email: session.customer_details?.email as string,
         },
       });
-    }
-    await prisma.booking.create({
-      data: {
-        selectedDate: Number(day),
-        selectedDayOfWeek: day_week,
-        selectedMonth: month,
-        selectedTime: time,
-        selectedYear: Number(year),
-        selectedProductDefaultPrice: Number(price),
-        cliente: {
-          connect: {
-            telefone: session.customer_details?.phone as string,
+
+      const bookingCreated = await prisma.booking.create({
+        data: {
+          selectedDate: Number(day),
+          selectedDayOfWeek: day_week,
+          selectedMonth: month,
+          selectedTime: time,
+          selectedYear: Number(year),
+          selectedProductDefaultPrice: Number(price),
+          cliente: {
+            connect: {
+              telefone: session.customer_details?.phone as string,
+            },
           },
         },
-      },
-    });
+      });
+
+      if (bookingCreated) {
+        console.log("Send email to " + updatedUser.email);
+      }
+    }
+
+    if (userExists && userExists.email) {
+      const bookingCreated = await prisma.booking.create({
+        data: {
+          selectedDate: Number(day),
+          selectedDayOfWeek: day_week,
+          selectedMonth: month,
+          selectedTime: time,
+          selectedYear: Number(year),
+          selectedProductDefaultPrice: Number(price),
+          cliente: {
+            connect: {
+              telefone: session.customer_details?.phone as string,
+            },
+          },
+        },
+      });
+
+      if (bookingCreated) {
+        console.log("Send email to " + userExists.email);
+      }
+    }
   } catch (error: any) {
     redirect(`${process.env.APP_URL}/?error=${error.message}`);
   }
