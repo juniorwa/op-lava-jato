@@ -8,7 +8,14 @@ const DynamicDrawer = dynamic(() => import("@/components/Drawer/Drawer"), {
 
 const Header: React.FC = () => {
   return (
-    <header className="flex justify-center p-10">
+    <header className="flex justify-center p-10"
+    style={{
+      padding:" 10% 0 ",
+      backgroundImage: `url('/logo.jpg')`,
+      backgroundPosition: 'center', // Centraliza a imagem de fundo
+      backgroundRepeat: 'no-repeat', // Previne a repetição da imagem
+      backgroundSize: '380px' // Faz a imagem cobrir toda a área disponível
+    }}>
       <div className="w-full max-w-5xl">
         <div className="flex items-center justify-between">
           <nav className="flex items-center">
